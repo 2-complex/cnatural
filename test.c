@@ -1,27 +1,8 @@
 
 #include "cnatural.h"
+#include "wav.h"
 
 #include "stdio.h"
-
-struct RiffHeader
-{
-    char riffTag[4]; /* "RIFF" */
-    int chunkSize;
-};
-
-struct WavHeader {
-    char waveTag[4];   /* "WAVE" */
-    char fmtTag[4];    /* "fmt " */
-    int Subchunk1Size; /* 16 for PCM. */
-    short audioFormat; /* PCM = 1*/
-    short numChannels; /* Mono = 1, Stereo = 2, etc. */
-    int sampleRate;    /*8000, 44100, etc.*/
-    int byteRate;      /* == sampleRate * numChannels * bitsPerSample/8*/
-    short blockAlign;  /* == numChannels * bitsPerSample / 8 */
-    short bitsPerSample;  /* 8 bits = 8, 16 bits = 16, etc. */
-    char dataTag[4];  /* "data" */
-    int dataSize;
-};
 
 #include <stdlib.h>
 #include <math.h>
@@ -83,7 +64,7 @@ void snare(
 		{1.0, 0.0}};
 	piecewise_desc mypieces = {sizeof(myp)/sizeof(point), myp, smoothstep, identity};
 
-	waveform(
+	wavefor	m(
 		data, start, duration,
 		constant, NULL, freq,
 		piecewise, &mypieces, amp,
@@ -96,7 +77,7 @@ int main()
 	point myp[] = {{0.0, 2.0}, {0.25, 4.0}, {1.0, 3.0}};
 	piecewise_desc myramp = {sizeof(myp)/sizeof(point), myp, lerp, identity};
 
-	int n = 44100 * 120;
+	int n = 44100 * 60;
 	int numSamples = n;
 	double* data = (double*)malloc(n * sizeof(double));
 	short* pritedData  = (short*)malloc(n * sizeof(short));
@@ -104,7 +85,6 @@ int main()
 
 	int e[] = {0, 2, 4, 7, 9, 12, 14, 16, 19, 21};
 	int index = 0;
-	
 	
 	int p = 0;
 	for( int j = 0; j < 20; j++ )
@@ -124,7 +104,6 @@ int main()
 	
 	echo(data, 0, 100, 1.0, 0.2);
 
-
 	p = 0;
 	for( int j = 0; j < 80; j++ )
 	{
@@ -136,14 +115,11 @@ int main()
 		p++;
 	}
 
-
-	RiffHeader fh = {{'R','I','F','F'}, 36 + n*c*2};
-	WavHeader  wh = {{'W','A','V','E'}, {'f','m','t',' '}, 16, 1, 1, 44100, c*2*44100, 2, 16, {'d','a','t','a'}, n*c*2 };
-
+	
 	FILE* f = fopen("out.wav", "w");	
 	
-	fwrite(&fh, sizeof(fh), 1, f);
-	fwrite(&wh, sizeof(wh), 1, f);
+	WavHeader wh = makeWavHeader();
+	fwrite(&wh, sizeof(WavHeader), 1, f);
 	
 	double* tracks[] = {data};
 
