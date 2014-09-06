@@ -2,11 +2,10 @@
 #ifndef _WAV_
 #define _WAV_
 
-typedef struct RiffHeader
-{
+typedef struct RiffBoxHeader {
     char riffTag[4]; /* "RIFF" */
     int chunkSize;
-} RiffHeader;
+} RiffBoxHeader;
 
 typedef struct WavBoxHeader {
     char waveTag[4];   /* "WAVE" */
@@ -23,10 +22,15 @@ typedef struct WavBoxHeader {
 } WavBoxHeader;
 
 typedef struct WavHeader {
-    RiffHeader rh;
-    WavBoxHeader wh;
-} 
+    RiffBoxHeader riffBoxHeader;
+    WavBoxHeader wavBoxHeader;
+} WavHeader;
+
+WavHeader makeWavHeader(
+    int numSamples,
+    int numChannels,
+    int sampleRate,
+    int bytesPerChannel);
 
 #endif
-
 
