@@ -78,7 +78,7 @@ int main()
     point myp[] = {{0.0, 2.0}, {0.25, 4.0}, {1.0, 3.0}};
     piecewise_desc myramp = {sizeof(myp)/sizeof(point), myp, lerp, identity};
 
-    int n = 44100 * 100;
+    int n = 44100 * 200;
 
     int numSamples = n;
     double* data = (double*)malloc(n * sizeof(double));
