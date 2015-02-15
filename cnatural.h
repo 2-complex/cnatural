@@ -42,6 +42,7 @@ void echo(double* data, double start, double duration, double period, double fac
 double constant(void* ptr, double param, double x);
 double sinwave(double x);
 double sawtoothwave(double x);
+double rampwave(double x);
 double trianglewave(double x);
 double squarewave(double x);
 double noise(double x);

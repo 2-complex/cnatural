@@ -19,8 +19,9 @@ void tone(
         data, start, duration,
         constant, NULL, freq,
         constant, NULL, amp,
-        sinwave);
+        rampwave);
 }
+
 
 void kick(
     double* data,
@@ -39,7 +40,7 @@ void kick(
     point ramp_pts[] =
     {
         {0.0, 0.0},
-        {1.0, -1.0}
+        {1.0, -80.0}
     };
 
     piecewise_desc amp_desc = {sizeof(uppity) / sizeof(point), uppity, lerp, identity};
@@ -49,8 +50,9 @@ void kick(
         data, start, duration,
         piecewise, &my_ramp, freq,
         piecewise, &amp_desc, amp,
-        sinwave);
+        squarewave);
 }
+
 
 void snare(
     double* data,
@@ -60,8 +62,8 @@ void snare(
     double amp)
 {
     point myp[] = {
-        {0.0, 0.0},
-        {0.25, 1.0},
+        {0.0, 1.0},
+        {0.25, 0.2},
         {1.0, 0.0}};
     piecewise_desc mypieces = {sizeof(myp)/sizeof(point), myp, smoothstep, identity};
 
@@ -92,6 +94,7 @@ int main()
     int j = 0;
     int p = 0;
 
+
     for( j = 0; j < 20; j++ )
     {
         for( i = 0; i < 4; i++ )
@@ -109,10 +112,11 @@ int main()
     p = 0;
     for( j = 0; j < 80; j++ )
     {
-        snare(data, p*0.25, 0.25, 220.0, 0.25);
+        if (j%2 == 1)
+            snare(data, p*0.25, 0.25, 220.0, 0.1);
         p++;
 
-        if (j%4 == 0)
+        if (j%2 == 0)
             kick(data, p*0.25, 0.25, 220.0, 0.25);
         p++;
     }

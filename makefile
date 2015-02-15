@@ -1,6 +1,9 @@
 
 CC = gcc -g3
 
+out.wav: test
+	./test
+
 test: cnatural.o cnatural.h wav.o wav.h test.c
 	$(CC) test.c cnatural.o wav.o -o test -lm
 

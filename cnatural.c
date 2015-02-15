@@ -124,6 +124,14 @@ double sinwave(double x)
 	return sin(2.0 * M_PI * x);
 }
 
+double rampwave(double x)
+{
+	x = fmod(x, 1.0);
+	point myp[] = {{0.0, 1.0}, {0.25, 1.0}, {0.50, -1.0}, {0.75, -1.0}, {1.0,1.0}};
+    piecewise_desc myform = {sizeof(myp)/sizeof(point), myp, lerp, identity};
+	return piecewise(&myform, 1.0, x);
+}
+
 double sawtoothwave(double x)
 {
 	x = fmod(x, 1.0);
